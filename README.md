@@ -6,7 +6,15 @@ _How to build_: gradle build
 
 _How to run_: gradle run
 
-Description of RESTful services:
+* NOTE
+  1. Before build/run please update _application.properties_ with your _google api key_ at
+  
+     _google.maps.geo-coding.api.key=${value}_
+
+  2. The REST services have basic HTTP authentication, details could be found at _application.properties_
+
+
+# Description of RESTful services:
 
 * POST
   1. Resource path: http://localhost:8080/v1/shops    
