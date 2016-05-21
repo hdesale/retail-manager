@@ -2,9 +2,7 @@ package com.github.hdesale.domain.location;
 
 import com.github.hdesale.RetailManagerApplication;
 import com.github.hdesale.model.Shop;
-import com.github.hdesale.model.ShopAddress;
 import com.google.common.util.concurrent.UncheckedExecutionException;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +10,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import static com.github.hdesale.TestUtils.createShop;
+import static com.github.hdesale.TestUtils.getShopAddressString;
 import static org.junit.Assert.*;
 
 /**
@@ -27,38 +27,23 @@ public class GoogleLocationServiceTest {
     @Qualifier("googleLocationService")
     private LocationService locationService;
 
-    private static Shop shop;
-
-    private static String shopAddressString;
-
-    @BeforeClass
-    public static void setUp() {
-        shop = createShop("15");
-    }
-
-    private static Shop createShop(String number) {
-        shop = new Shop();
-        shop.setShopName("Tesco");
-        ShopAddress shopAddress = new ShopAddress();
-        shopAddress.setNumber(number);
-        shopAddress.setPostCode("E14 4QT");
-        shop.setShopAddress(shopAddress);
-        shopAddressString = shop.getShopAddress().buildAddressString();
-        return shop;
-    }
-
     @Test
     public void testFindLocation() throws Exception {
-        Location location = locationService.findLocation(shopAddressString);
+        Shop shop = createShop("Tesco", "15", "E14 4QT");
+        Location location = locationService.findLocation(getShopAddressString(shop));
         assertNotNull(location);
         assertNotEquals(0, location.getLat(), 0);
         assertNotEquals(0, location.getLng(), 0);
     }
 
     @Test(expected = UncheckedExecutionException.class)
-    public void testFindWrongLocation() throws Exception {
-        String address = "LKAjs;oaiej3rklja;kjA;O;;okjfoiwjurlkfjk";
-        locationService.findLocation(address);
+    public void testFindLocationWithBlankAddress() throws Exception {
+        locationService.findLocation("");
+    }
+
+    @Test(expected = UncheckedExecutionException.class)
+    public void testFindLocationWithInvalidAddress() throws Exception {
+        locationService.findLocation("LKAjs;oaiej3rklja;kjA;O;;okjfoiwjurlkfjk");
     }
 
     @Test
@@ -66,7 +51,13 @@ public class GoogleLocationServiceTest {
         Location first = new Location(1.0, 1.0);
         Location second = new Location(0, 0);
         assertNotEquals(first, second);
+
+        // distance should be more than 0
         double distance = locationService.calculateDistance(first, second);
         assertTrue(distance > 0);
+
+        // distance should be 0
+        distance = locationService.calculateDistance(first, first);
+        assertTrue(distance == 0);
     }
 }

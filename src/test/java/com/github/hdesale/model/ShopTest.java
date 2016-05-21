@@ -1,11 +1,10 @@
 package com.github.hdesale.model;
 
+import com.github.hdesale.TestUtils;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 /**
  * JUnit test for {@link Shop} and {@link ShopAddress}
@@ -18,12 +17,7 @@ public class ShopTest {
 
     @Before
     public void setUp() {
-        shop = new Shop();
-        shop.setShopName("Test Shop");
-        ShopAddress shopAddress = new ShopAddress();
-        shopAddress.setNumber("12A");
-        shopAddress.setPostCode("ABC DEF");
-        shop.setShopAddress(shopAddress);
+        shop = TestUtils.createShop("Test Shop", "12A", "ABC DEF");
         shop.setShopLatitude(98.234);
         shop.setShopLongitude(-402.3234);
     }

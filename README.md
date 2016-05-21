@@ -1,7 +1,5 @@
 # retail-manager
 
----
-
 _JDK Version_: Java 8
 
 _How to build_: `gradle build`
@@ -19,6 +17,7 @@ _How to run_: `gradle run`
 
      **_user = 'client', password = 'abc12345'_**
 
+---
 
 ### Description of RESTful services:
 
@@ -32,19 +31,19 @@ _How to run_: `gradle run`
 
 * GET
   * Resource path:- `http://localhost:8080/v1/shops/{id}`
-  * Consumes path param:-
+  * Path param:-
     * id
   * Response:- **Ok** (200) with shop details as json
 
 * DELETE
   * Resource path:- `http://localhost:8080/v1/shops/{id}`
-  * Consumes path param:-
+  * Path param:-
     * id
   * Response:- **No content** (204)
   
 * GET
   * Resource path:- `http://localhost:8080/v1/shops/near-me?customerLongitude={value}&customerLatitude={value}`
-  * Consumes query params:-
+  * Query params:-
     * customerLongitude
     * customerLatitude
   * Response:- **Ok** (200) with nearest shop details as json

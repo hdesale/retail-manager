@@ -1,12 +1,19 @@
 package com.github.hdesale.domain.shop;
 
+import com.github.hdesale.RetailManagerApplication;
 import com.github.hdesale.model.Shop;
-import com.github.hdesale.model.ShopAddress;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.Objects;
-
+import static com.github.hdesale.TestUtils.createShop;
+import static com.github.hdesale.TestUtils.deepEquals;
+import static com.github.hdesale.TestUtils.getShopAddressString;
 import static org.junit.Assert.*;
 
 /**
@@ -14,31 +21,27 @@ import static org.junit.Assert.*;
  *
  * @author Hemant
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringApplicationConfiguration(classes = RetailManagerApplication.class)
 public class InMemoryShopRepositoryTest {
 
-    private static InMemoryShopRepository repository;
+    @Autowired
+    @Qualifier("inMemoryShopRepository")
+    private ShopRepository repository;
 
-    private static String id;
+    private String id;
 
-    private static Shop shop;
+    private Shop shop;
 
-    @BeforeClass
-    public static void setUp() {
-        repository = new InMemoryShopRepository();
-        repository.init();
-        id = repository.addShop(createShop("12A"));
+    @Before
+    public void setUp() {
+        shop = createShop("Test Shop", "12A", "ABC DEF");
+        id = repository.addShop(shop);
     }
 
-    private static Shop createShop(String number) {
-        shop = new Shop();
-        shop.setShopName("Test Shop");
-        ShopAddress shopAddress = new ShopAddress();
-        shopAddress.setNumber(number);
-        shopAddress.setPostCode("ABC DEF");
-        shop.setShopAddress(shopAddress);
-        shop.setShopLatitude(98.234);
-        shop.setShopLongitude(-402.3234);
-        return shop;
+    @After
+    public void tearDown() {
+        repository.removeShop(id);
     }
 
     @Test
@@ -48,24 +51,28 @@ public class InMemoryShopRepositoryTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testDuplicateAddShop() throws Exception {
-        assertNotNull(id);
-        repository.addShop(createShop("12A"));
+        Shop shop = createShop("Test Shop", "12A", "ABC DEF");
+        repository.addShop(shop);
     }
 
     @Test
     public void testGetShop() throws Exception {
         assertNotNull(repository.getShop(id));
+
         Shop shop1 = repository.getShop(id).orElse(null);
         Shop shop2 = repository.getShop(id).orElse(null);
-        assertTrue(shop1 == shop2);
-        Objects.deepEquals(shop, repository.getShop(id));
-        assertFalse(repository.getShop("23942039KNKJHLIJKJOD").isPresent());
+        assertTrue(deepEquals(shop, shop1));
+        assertTrue(deepEquals(shop1, shop2));
+
+        Shop notAddedShop = createShop("Not added", "1A", "IRY OIO");
+        assertFalse(repository.getShop(getShopAddressString(notAddedShop)).isPresent());
     }
 
     @Test
     public void testGetAllShops() throws Exception {
-        repository.addShop(createShop("11A"));
-        repository.addShop(createShop("13B"));
+        assertNotNull(repository.getShop(id));
+        repository.addShop(createShop("Second", "1A", "IRY AIO"));
+        repository.addShop(createShop("Third", "2A", "IRY BIO"));
         assertEquals(3, repository.getAllShops().size());
     }
 
