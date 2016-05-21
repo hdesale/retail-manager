@@ -11,7 +11,7 @@ _How to run_: gradle run
   
      _google.maps.geo-coding.api.key=${value}_
 
-  2. The REST services have basic HTTP authentication, details could be found at _application.properties_
+  2. The REST services have basic HTTP authentication enabled for this demo, user = 'client', password = 'abc12345'
 
 
 # Description of RESTful services:
