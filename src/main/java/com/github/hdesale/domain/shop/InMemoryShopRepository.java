@@ -1,11 +1,9 @@
 package com.github.hdesale.domain.shop;
 
 import com.github.hdesale.model.Shop;
-import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
@@ -27,7 +25,7 @@ public class InMemoryShopRepository implements ShopRepository {
     }
 
     @Override
-    public String addShop(@NotNull Shop shop) {
+    public String addShop(Shop shop) {
         String id = generateId(shop);
         if (shops.putIfAbsent(id, shop) == null) {
             return id;
@@ -41,7 +39,7 @@ public class InMemoryShopRepository implements ShopRepository {
     }
 
     @Override
-    public Optional<Shop> getShop(@NotBlank String id) {
+    public Optional<Shop> getShop(String id) {
         return Optional.ofNullable(shops.get(id));
     }
 
@@ -51,7 +49,7 @@ public class InMemoryShopRepository implements ShopRepository {
     }
 
     @Override
-    public boolean removeShop(@NotBlank String id) {
+    public boolean removeShop(String id) {
         return shops.remove(id) != null;
     }
 }

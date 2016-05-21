@@ -1,6 +1,5 @@
 package com.github.hdesale;
 
-import com.github.hdesale.domain.location.SSLClientHelper;
 import com.github.hdesale.model.Shop;
 import com.github.hdesale.model.ShopAddress;
 import org.glassfish.jersey.client.ClientConfig;
@@ -14,6 +13,7 @@ import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -38,7 +38,7 @@ public class RetailMarketIntegrationTests {
                 .build();
         ClientConfig clientConfig = new ClientConfig();
         clientConfig.register(feature);
-        client = SSLClientHelper.getSSLClient(clientConfig);
+        client = ClientBuilder.newClient(clientConfig);
     }
 
     private static Shop createShop(String name, String number, String postCode) {

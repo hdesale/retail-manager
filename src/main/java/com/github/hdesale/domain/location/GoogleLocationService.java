@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 import java.security.KeyManagementException;
@@ -56,7 +57,7 @@ public class GoogleLocationService implements LocationService {
 
     @PostConstruct
     public void init() throws KeyManagementException, NoSuchAlgorithmException {
-        restClient = SSLClientHelper.getSSLClient(new ClientConfig());
+        restClient = ClientBuilder.newClient(new ClientConfig());
         locationCache = newBuilder().maximumSize(10000).concurrencyLevel(16).build(createLocationCacheLoader());
     }
 
