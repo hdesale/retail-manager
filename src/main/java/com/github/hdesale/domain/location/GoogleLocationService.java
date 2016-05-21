@@ -3,7 +3,6 @@ package com.github.hdesale.domain.location;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import org.glassfish.jersey.client.ClientConfig;
-import org.hibernate.validator.constraints.NotBlank;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import javax.validation.constraints.NotNull;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -42,12 +40,6 @@ public class GoogleLocationService implements LocationService {
     @Value("${google.maps.geo-coding.path}")
     private String apiPath;
 
-    @Value("${google.maps.geo-coding.param.address}")
-    private String addressParam;
-
-    @Value("${google.maps.geo-coding.param.key}")
-    private String keyParam;
-
     @Value("${google.maps.geo-coding.api.key}")
     private String apiKey;
 
@@ -62,7 +54,7 @@ public class GoogleLocationService implements LocationService {
     }
 
     @Override
-    public Location findLocation(@NotBlank String address) {
+    public Location findLocation(String address) {
         return locationCache.getUnchecked(address);
     }
 
@@ -96,8 +88,8 @@ public class GoogleLocationService implements LocationService {
 
     private WebTarget createWebTarget(String address) {
         return restClient.target(fromUri(apiRoot).path(apiPath + "/json")
-                .queryParam(addressParam, address)
-                .queryParam(keyParam, apiKey).build());
+                .queryParam("address", address)
+                .queryParam("key", apiKey).build());
     }
 
     private boolean containsResults(JSONObject jsonObject) {
@@ -120,7 +112,7 @@ public class GoogleLocationService implements LocationService {
     }
 
     @Override
-    public double calculateDistance(@NotNull Location first, @NotNull Location second) {
+    public double calculateDistance(Location first, Location second) {
         return doCalculateDistance(first.getLat(), first.getLng(), second.getLat(), second.getLng());
     }
 

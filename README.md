@@ -1,10 +1,10 @@
 # retail-manager
 
-_JDK Version_: Java 8
+_JDK Version_:- Java 8
 
-_How to build_: `gradle build`
+_How to build_:- run `gradle build` at project root dir
 
-_How to run_: `gradle run`
+_How to run_:- run `gradle run` at project root dir
 
 ---
 
